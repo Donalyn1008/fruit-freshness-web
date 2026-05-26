@@ -5,12 +5,14 @@ from pathlib import Path
 from typing import Any
 
 import streamlit as st
+import torch
 from PIL import Image, ImageDraw, ImageFont
 from ultralytics import YOLOv10
 
 ROOT = Path(__file__).resolve().parent
 MODEL_PATH = ROOT / "models" / "yolov10s-fruit-best.pt"
 CONF_THRESHOLD = 0.25
+_TORCH_LOAD_PATCHED = False
 
 STATUS_MAP = {
     "Fresh Apples": ("Fresh", "Apple", "可食用", "#1f9d55"),
@@ -54,7 +56,25 @@ st.markdown(
 
 @st.cache_resource
 def load_model() -> YOLOv10:
+    patch_torch_load_for_yolov10()
     return YOLOv10(str(MODEL_PATH))
+
+
+def patch_torch_load_for_yolov10() -> None:
+    global _TORCH_LOAD_PATCHED
+    if _TORCH_LOAD_PATCHED:
+        return
+
+    original_torch_load = torch.load
+
+    def compatible_torch_load(*args: Any, **kwargs: Any) -> Any:
+        # PyTorch 2.6+ defaults to weights_only=True, which rejects older
+        # Ultralytics checkpoints. This app only loads our own bundled model.
+        kwargs.setdefault("weights_only", False)
+        return original_torch_load(*args, **kwargs)
+
+    torch.load = compatible_torch_load  # type: ignore[assignment]
+    _TORCH_LOAD_PATCHED = True
 
 
 def draw_detection(image: Image.Image, detections: list[dict[str, Any]]) -> Image.Image:

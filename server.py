@@ -11,12 +11,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageDraw, ImageFont
+import torch
 from ultralytics import YOLOv10
 
 ROOT = Path(__file__).resolve().parent
 MODEL_PATH = ROOT / "models" / "yolov10s-fruit-best.pt"
 STATIC_DIR = ROOT / "static"
 CONF_THRESHOLD = float(os.getenv("FRUIT_CONF", "0.25"))
+_TORCH_LOAD_PATCHED = False
 
 app = FastAPI(title="Fruit Freshness Detection Demo")
 app.add_middleware(
@@ -45,8 +47,26 @@ def get_model() -> YOLOv10:
     if model is None:
         if not MODEL_PATH.exists():
             raise FileNotFoundError(f"Model not found: {MODEL_PATH}")
+        patch_torch_load_for_yolov10()
         model = YOLOv10(str(MODEL_PATH))
     return model
+
+
+def patch_torch_load_for_yolov10() -> None:
+    global _TORCH_LOAD_PATCHED
+    if _TORCH_LOAD_PATCHED:
+        return
+
+    original_torch_load = torch.load
+
+    def compatible_torch_load(*args: Any, **kwargs: Any) -> Any:
+        # PyTorch 2.6+ defaults to weights_only=True, which rejects older
+        # Ultralytics checkpoints. This app only loads our own bundled model.
+        kwargs.setdefault("weights_only", False)
+        return original_torch_load(*args, **kwargs)
+
+    torch.load = compatible_torch_load  # type: ignore[assignment]
+    _TORCH_LOAD_PATCHED = True
 
 
 def image_to_data_url(image: Image.Image) -> str:
