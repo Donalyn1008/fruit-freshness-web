@@ -108,3 +108,13 @@ packages.txt
 ```
 
 After this file is pushed, reboot or redeploy the Streamlit app so Streamlit installs those apt packages before Python requirements.
+
+## Streamlit Cloud apt dependency note
+
+`packages.txt` intentionally only installs:
+
+```text
+libgl1
+```
+
+Do not add `libglib2.0-0` on Streamlit Cloud because the current Debian image may resolve it from an incompatible repository and fail with missing `libffi7` / `libpcre3` dependencies.
