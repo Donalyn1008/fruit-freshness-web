@@ -1,0 +1,55 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fruit Freshness Detector | YOLOv10s</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">YOLOv10s Demo</div>
+      <h1>水果新鮮度辨識系統</h1>
+      <p>上傳蘋果、香蕉或橘子的照片，系統會框出水果位置並判斷 Fresh / Rotten。</p>
+      <div class="stats">
+        <span>Model: YOLOv10s</span>
+        <span>mAP@0.5: 0.93545</span>
+        <span>Precision: 0.92559</span>
+      </div>
+    </section>
+
+    <section class="card uploader">
+      <label class="dropzone" id="dropzone">
+        <input id="imageInput" type="file" accept="image/*" />
+        <span class="drop-title">選擇或拖曳圖片到這裡</span>
+        <span class="drop-subtitle">支援 JPG / PNG / WEBP</span>
+      </label>
+      <button id="predictBtn" type="button">開始辨識</button>
+      <p id="statusText" class="status">等待上傳圖片</p>
+    </section>
+
+    <section class="grid">
+      <article class="card preview-card">
+        <h2>偵測結果圖片</h2>
+        <div class="image-frame">
+          <img id="resultImage" alt="辨識結果會顯示在這裡" />
+          <div id="emptyImage" class="empty">尚未產生結果</div>
+        </div>
+      </article>
+
+      <article class="card result-card">
+        <h2>辨識摘要</h2>
+        <div id="summary" class="summary">請先上傳圖片。</div>
+        <div id="detections" class="detections"></div>
+      </article>
+    </section>
+
+    <section class="card note">
+      <h2>Demo 說明</h2>
+      <p>Fresh / Rotten 類別代表水果新鮮或腐爛；bounding box 是圖片上框出水果位置的方框。</p>
+    </section>
+  </main>
+  <script src="/static/config.js"></script>`n  <script src="/static/app.js"></script>
+</body>
+</html>
