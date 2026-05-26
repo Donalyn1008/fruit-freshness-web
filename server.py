@@ -40,6 +40,7 @@ STATUS_MAP = {
     "Rotten Banana": ("Rotten", "Banana", "不建議食用", "#d64545"),
     "Rotten Oranges": ("Rotten", "Orange", "不建議食用", "#d64545"),
 }
+SUPPORTED_LABELS = set(STATUS_MAP)
 
 
 def get_model() -> YOLOv10:
@@ -130,6 +131,8 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
         for box in result.boxes:
             class_id = int(box.cls[0])
             label = predictor.names[class_id]
+            if label not in SUPPORTED_LABELS:
+                continue
             confidence = float(box.conf[0])
             x1, y1, x2, y2 = [float(value) for value in box.xyxy[0].tolist()]
             status, fruit, advice, color = STATUS_MAP.get(label, ("Unknown", label, "請人工確認", "#444444"))
@@ -153,7 +156,7 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
         fresh_count = sum(1 for item in detections if item["status"] == "Fresh")
         summary = f"偵測到 {rotten_count} 個腐爛水果，建議不要食用。" if rotten_count else f"偵測到 {fresh_count} 個新鮮水果。"
     else:
-        summary = "沒有偵測到水果，請換一張更清楚的圖片。"
+        summary = "無法識別。請上傳蘋果、香蕉或橘子的圖片。"
 
     return {
         "summary": summary,

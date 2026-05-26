@@ -68,7 +68,7 @@ button.addEventListener("click", async () => {
     summary.textContent = data.summary;
 
     if (!data.detections.length) {
-      detections.innerHTML = `<div class="det"><div class="det-title">沒有偵測結果</div><div class="det-meta">請換成水果更清楚、光線更足的圖片。</div></div>`;
+      detections.innerHTML = `<div class="det"><div class="det-title">無法識別</div><div class="det-meta">請上傳蘋果、香蕉或橘子的圖片。</div></div>`;
     } else {
       detections.innerHTML = data.detections.map((det, index) => {
         const cls = det.status === "Rotten" ? "det rotten" : "det";
