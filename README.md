@@ -133,3 +133,20 @@ The app still installs the official YOLOv10 repository:
 ```text
 git+https://github.com/THU-MIG/yolov10.git
 ```
+
+## Python 3.14 warning
+
+Streamlit Cloud may default to Python 3.14. YOLOv10 / Ultralytics / OpenCV are more stable on Python 3.10 or 3.11.
+
+Recommended Streamlit app setting:
+
+```text
+Python version: 3.11
+```
+
+If OpenCV fails on Debian trixie, `packages.txt` uses:
+
+```text
+libgl1
+libglib2.0-0t64
+```
