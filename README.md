@@ -161,3 +161,12 @@ Max bounding-box area ratio: 0.45
 ```
 
 Detections below confidence 0.5 are hidden. Detections whose bounding box covers more than 45% of the image are treated as likely false positives and ignored.
+
+Large-box filtering keeps high-confidence detections:
+
+```text
+Max box area ratio: 0.45
+Large box confidence exception: 0.9
+```
+
+This prevents low-confidence oversized false positives while still allowing clear single-fruit photos where the fruit occupies most of the image.

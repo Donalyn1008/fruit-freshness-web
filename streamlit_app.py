@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent
 MODEL_PATH = ROOT / "models" / "yolov10s-fruit-best.pt"
 CONF_THRESHOLD = 0.5
 MAX_BOX_AREA_RATIO = 0.45
+LARGE_BOX_CONF_THRESHOLD = 0.9
 _TORCH_LOAD_PATCHED = False
 
 STATUS_MAP = {
@@ -183,7 +184,7 @@ def predict(image: Image.Image) -> tuple[Image.Image, list[dict[str, Any]]]:
             confidence = float(box.conf[0])
             x1, y1, x2, y2 = [float(value) for value in box.xyxy[0].tolist()]
             box_area_ratio = max(0.0, (x2 - x1) * (y2 - y1)) / image_area
-            if box_area_ratio > MAX_BOX_AREA_RATIO:
+            if box_area_ratio > MAX_BOX_AREA_RATIO and confidence < LARGE_BOX_CONF_THRESHOLD:
                 continue
             status, fruit, advice, color = STATUS_MAP.get(label, ("Unknown", label, "請人工確認", "#444444"))
             detections.append(
