@@ -92,3 +92,19 @@ Branch: main
 Main file path: streamlit_app.py
 Python version: 3.10
 ```
+
+## Fix OpenCV / cv2 ImportError on Streamlit Cloud
+
+If the app fails at:
+
+```text
+import cv2
+```
+
+Streamlit Cloud needs Linux system packages for OpenCV. This repo includes:
+
+```text
+packages.txt
+```
+
+After this file is pushed, reboot or redeploy the Streamlit app so Streamlit installs those apt packages before Python requirements.
