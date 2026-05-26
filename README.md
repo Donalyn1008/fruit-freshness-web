@@ -67,3 +67,28 @@ Deploy steps:
 6. Deploy
 
 This is similar to the Computer-assembly Streamlit project.
+
+## Fix Streamlit Install Error
+
+If Streamlit shows `Error installing requirements`, open **Manage app -> Settings -> Advanced settings** and set:
+
+```text
+Python version: 3.10
+```
+
+Reason: this app uses PyTorch `2.0.1+cpu`, which is compatible with Python 3.10 but may fail on Streamlit's default newer Python version.
+
+Then click:
+
+```text
+Reboot app
+```
+
+or delete and redeploy the app with:
+
+```text
+Repository: Donalyn1008/fruit-freshness-web
+Branch: main
+Main file path: streamlit_app.py
+Python version: 3.10
+```
