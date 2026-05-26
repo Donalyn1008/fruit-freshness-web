@@ -118,3 +118,18 @@ libgl1
 ```
 
 Do not add `libglib2.0-0` on Streamlit Cloud because the current Debian image may resolve it from an incompatible repository and fail with missing `libffi7` / `libpcre3` dependencies.
+
+## Streamlit Cloud PyTorch version note
+
+If Streamlit Cloud uses a newer Python runtime, older PyTorch wheels such as `torch==2.0.1+cpu` may not exist for that Python version. The deployment requirements therefore use a newer CPU PyTorch wheel:
+
+```text
+torch==2.9.1+cpu
+torchvision==0.24.1+cpu
+```
+
+The app still installs the official YOLOv10 repository:
+
+```text
+git+https://github.com/THU-MIG/yolov10.git
+```
