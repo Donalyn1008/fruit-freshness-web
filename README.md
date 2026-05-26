@@ -150,3 +150,14 @@ If OpenCV fails on Debian trixie, `packages.txt` uses:
 libgl1
 libglib2.0-0t64
 ```
+
+## Post-processing rules
+
+To reduce false detections on crowded fruit basket images, the app applies two filters:
+
+```text
+Confidence threshold: 0.5
+Max bounding-box area ratio: 0.45
+```
+
+Detections below confidence 0.5 are hidden. Detections whose bounding box covers more than 45% of the image are treated as likely false positives and ignored.

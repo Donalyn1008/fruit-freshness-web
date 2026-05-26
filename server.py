@@ -17,7 +17,8 @@ from ultralytics import YOLOv10
 ROOT = Path(__file__).resolve().parent
 MODEL_PATH = ROOT / "models" / "yolov10s-fruit-best.pt"
 STATIC_DIR = ROOT / "static"
-CONF_THRESHOLD = float(os.getenv("FRUIT_CONF", "0.25"))
+CONF_THRESHOLD = float(os.getenv("FRUIT_CONF", "0.5"))
+MAX_BOX_AREA_RATIO = float(os.getenv("FRUIT_MAX_BOX_AREA_RATIO", "0.45"))
 _TORCH_LOAD_PATCHED = False
 
 app = FastAPI(title="Fruit Freshness Detection Demo")
@@ -127,6 +128,7 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
     result = predictor.predict(image, conf=CONF_THRESHOLD, verbose=False)[0]
 
     detections: list[dict[str, Any]] = []
+    image_area = image.width * image.height
     if result.boxes is not None:
         for box in result.boxes:
             class_id = int(box.cls[0])
@@ -135,6 +137,9 @@ async def predict(file: UploadFile = File(...)) -> dict[str, Any]:
                 continue
             confidence = float(box.conf[0])
             x1, y1, x2, y2 = [float(value) for value in box.xyxy[0].tolist()]
+            box_area_ratio = max(0.0, (x2 - x1) * (y2 - y1)) / image_area
+            if box_area_ratio > MAX_BOX_AREA_RATIO:
+                continue
             status, fruit, advice, color = STATUS_MAP.get(label, ("Unknown", label, "請人工確認", "#444444"))
             detections.append(
                 {
