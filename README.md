@@ -48,3 +48,22 @@ Prediction:
 POST /api/predict
 Form field: file=<image>
 ```
+
+## Streamlit Community Cloud Deployment
+
+This repository also includes a Streamlit app entrypoint:
+
+```text
+streamlit_app.py
+```
+
+Deploy steps:
+
+1. Go to https://share.streamlit.io
+2. Click Create app
+3. Select repository: Donalyn1008/fruit-freshness-web
+4. Branch: main
+5. Main file path: streamlit_app.py
+6. Deploy
+
+This is similar to the Computer-assembly Streamlit project.

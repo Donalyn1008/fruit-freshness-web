@@ -8,3 +8,4 @@ pillow==10.4.0
 opencv-python-headless==4.9.0.80
 numpy==1.26.4
 git+https://github.com/THU-MIG/yolov10.git
+streamlit>=1.30
